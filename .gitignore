@@ -1,0 +1,8 @@
+# Excluir la carpeta completa del JDK que está causando el problema
+oracleJdk-25/
+
+# Archivos compilados de Java (no deben subirse, se generan en el CI)
+*.class
+
+# Directorios de entornos de desarrollo (IDE)
+.vscode/
