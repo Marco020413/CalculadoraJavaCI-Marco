@@ -1,7 +1,11 @@
-name: Java CI 
+name: Java CI
+
 on: 
+  # Se activa con pushes a la rama main
   push:
     branches: [ main ] 
+  
+  # Se activa con Pull Requests dirigidos a main
   pull_request:
     branches: [ main ]
 
@@ -10,18 +14,21 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout del código
+        # Descarga el código del repositorio al ambiente de ejecución
         uses: actions/checkout@v3
 
       - name: Configurar JDK
+        # Instala Java 17 (Temurin)
         uses: actions/setup-java@v3
         with:
           java-version: '17'
           distribution: 'temurin'
 
       - name: Compilar el proyecto
-        
+        # Compila ambas clases: Calculadora y CalculadoraTest
         run: javac src/Calculadora.java test/CalculadoraTest.java
 
       - name: Ejecutar pruebas
-
+        # Ejecuta la clase de pruebas usando su Nombre de Clase Completo (FQN)
+        # y define los directorios compilados (:src:test) en el classpath
         run: java -cp .:src:test test.CalculadoraTest
