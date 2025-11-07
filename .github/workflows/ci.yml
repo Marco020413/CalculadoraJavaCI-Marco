@@ -32,3 +32,10 @@ jobs:
         # Ejecuta la clase de pruebas usando su Nombre de Clase Completo (FQN)
         # y define los directorios compilados (:src:test) en el classpath
         run: java -cp .:src:test test.CalculadoraTest
+
+      - name: Notificar en Slack si falla
+        if: failure()
+        run: |
+         curl -X POST -H 'Content-type: application/json' \
+          --data '{"text":" Fallo en el pipeline de la Calculadora Java. Revisa las pruebas en GitHub Actions."}' \
+          $ {{ secrets.SLACK_WEBHOOK_URL }}
