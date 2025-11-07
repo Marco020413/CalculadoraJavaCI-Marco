@@ -34,8 +34,12 @@ jobs:
         run: java -cp .:src:test test.CalculadoraTest
 
       - name: Notificar en Slack si falla
-        if: failure()
-        run: |
-         curl -X POST -H 'Content-type: application/json' \
-          --data '{"text":" Fallo en el pipeline de la Calculadora Java. Revisa las pruebas en GitHub Actions."}' \
-          $ {{ secrets.SLACK_WEBHOOK_URL }}
+        # Utilizamos una acción probada para manejar las notificaciones de Slack.
+        uses: rtCamp/action-slack-notify@v2
+        if: ${{ failure() }} # Solo se ejecuta si el job anterior falla
+        env:
+          SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK_URL }} # Accede al secreto
+          SLACK_TITLE: Fallo en el Pipeline de Java CI ❌
+          SLACK_MESSAGE: El Job 'Build' ha fallado. Revisa los logs.
+          SLACK_USERNAME: GitHub Actions Bot
+          SLACK_ICON: https://github.com/github.png
