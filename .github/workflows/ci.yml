@@ -14,7 +14,6 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout del código
-        # Descarga el código del repositorio al ambiente de ejecución
         uses: actions/checkout@v3
 
       - name: Configurar JDK
@@ -25,21 +24,18 @@ jobs:
           distribution: 'temurin'
 
       - name: Compilar el proyecto
-        # Compila ambas clases: Calculadora y CalculadoraTest
         run: javac src/Calculadora.java test/CalculadoraTest.java
 
       - name: Ejecutar pruebas
-        # Ejecuta la clase de pruebas usando su Nombre de Clase Completo (FQN)
-        # y define los directorios compilados (:src:test) en el classpath
-        run: java -cp .:src:test test.CalculadoraTest
-
+        # CORREGIDO: Añadimos -ea para activar las assertions y forzar la falla.
+        run: java -ea -cp .:src:test test.CalculadoraTest
+        
       - name: Notificar en Slack si falla
-        # Utilizamos una acción probada para manejar las notificaciones de Slack.
         uses: rtCamp/action-slack-notify@v2
-        if: ${{ failure() }} # Solo se ejecuta si el job anterior falla
+        if: ${{ failure() }} # Solo se ejecuta si el pipeline falla
         env:
-          SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK_URL }} # Accede al secreto
+          SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK_URL }}
           SLACK_TITLE: Fallo en el Pipeline de Java CI ❌
-          SLACK_MESSAGE: El Job 'Build' ha fallado. Revisa los logs.
+          SLACK_MESSAGE: El Job 'Build' ha fallado al ejecutar las pruebas.
           SLACK_USERNAME: GitHub Actions Bot
           SLACK_ICON: https://github.com/github.png
